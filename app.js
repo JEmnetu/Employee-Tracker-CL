@@ -66,7 +66,7 @@ inquirer.prompt([{
     name: 'action',
     message: 'What would you like to do?',
     type: 'list',
-    choices: ['Display all Departments', 'Display all Roles', 'Display all Employees', 'Add Department', 'Add Role', 'Add Employee']
+    choices: ['Display all Departments', 'Display all Roles', 'Display all Employees', 'Add Department', 'Add Role', 'Add Employee', 'Update Employee Role']
 }]).then((response) => {
     if (response.action === 'Display all Departments') {
         queryDept();
@@ -146,5 +146,26 @@ inquirer.prompt([{
                     queryEmployee();
                 })
             })
+    } else if (response.action === 'Update Employee Role') {
+        inquirer.prompt([{
+                    name: 'employeeName',
+                    message: "Enter the name of the employee you would like to update",
+                    type: "input"
+                },
+                {
+                    name: "newID",
+                    message: "Enter the new role ID for this employee",
+                    type: "input"
+                }
+            ])
+            .then((data) => {
+                connection.query('UPDATE employee SET ?', { role_id: data.newID }, (err, result) => {
+                    if (err) {
+                        console.log(err.stack);
+                    }
+                    queryEmployee();
+                })
+            })
     }
+
 });
